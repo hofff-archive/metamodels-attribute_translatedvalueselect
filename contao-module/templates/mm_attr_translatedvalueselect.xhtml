@@ -1,5 +1,5 @@
 <?php
 $valueColumn = $this->attribute->get('select_column');
 $data = $this->attribute->getReferencedData($this->raw, $valueColumn);
-echo $data[$this->raw] ? $data[$this->raw][$valueColumn] : $valueColumn;
+echo $data[$this->raw] ? $data[$this->raw][$valueColumn] : $this->raw;
 ?>

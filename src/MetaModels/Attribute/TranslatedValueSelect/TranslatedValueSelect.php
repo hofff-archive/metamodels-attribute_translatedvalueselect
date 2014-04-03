@@ -15,9 +15,9 @@ class TranslatedValueSelect extends TranslatedReference {
 			return array();
 		}
 
-		$columns = $columns === null ? '*' : implode(',', (array) $columns);
 		$selectTable = $this->get('select_table');
 		$idColumn = $this->get('select_id');
+		$columns = $columns === null ? '*' : implode(',', array_unique(array_merge(array($idColumn), (array) $columns)));
 		$idWildcards = self::generateWildcards($ids);
 		$condition = html_entity_decode($this->get('select_where'));
 		strlen($condition) && $condition = 'AND ' . $condition;
@@ -128,10 +128,10 @@ $having
 ORDER BY		_select.$sortColumn
 SQL;
 
-		$params = $ids;
+		$params = (array) $ids;
 		$params[] = $this->get('id');
 		$params[] = $this->getMetaModel()->getActiveLanguage();
-		$params = array_merge($params, $ids);
+		$params = array_merge($params, (array) $ids);
 		$params[] = $this->get('id');
 		$params[] = $this->getMetaModel()->getFallbackLanguage();
 
@@ -305,7 +305,7 @@ SQL;
 	}
 
 	public static function generateWildcards(array $values, $wildcard = '?') {
-		return rtrim(str_repeat($wildcard . ',', count($ids)), ',');
+		return rtrim(str_repeat($wildcard . ',', count($values)), ',');
 	}
 
 }
