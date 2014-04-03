@@ -167,9 +167,9 @@ AND		_join.att_id = ?
 $languageCondition
 SQL;
 
-		$params = $languages;
-		$params[] = $this->get('id');
 		$params[] = str_replace(array('*', '?'), array('%', '_'), $pattern);
+		$params[] = $this->get('id');
+		$params = array_merge($params, $languages);
 
 		$result = \Database::getInstance()->prepare($sql)->executeUncached($params);
 
