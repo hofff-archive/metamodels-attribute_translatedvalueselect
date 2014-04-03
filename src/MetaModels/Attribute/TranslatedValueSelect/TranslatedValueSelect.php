@@ -9,6 +9,11 @@ use MetaModels\Attribute\TranslatedReference;
  */
 class TranslatedValueSelect extends TranslatedReference {
 
+	/**
+	 * @param interger|array<integer> $ids
+	 * @param null|string|array<string> $columns
+	 * @return array<integer, array>
+	 */
 	public function getReferencedData($ids, $columns = null) {
 		$ids = (array) $ids;
 		if(!$ids) {
@@ -37,12 +42,18 @@ SQL;
 		return (array) $data;
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\Base::getFilterUrlValue()
+	 */
 	public function getFilterUrlValue($value) {
 		$aliasColumn = $this->get('select_alias') ?: $this->get('select_id');
 		$data = $this->getReferencedData($value, $aliasColumn);
 		return urlencode($data[$value] ? $data[$value][$aliasColumn] : $value);
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\Base::getAttributeSettingNames()
+	 */
 	public function getAttributeSettingNames() {
 		return array_merge(parent::getAttributeSettingNames(), array(
 			'select_table',
@@ -62,18 +73,30 @@ SQL;
 		));
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::getValueTable()
+	*/
 	protected function getValueTable() {
 		return 'tl_metamodel_translatedvalueselect';
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::valueToWidget()
+	*/
 	public function valueToWidget($value) {
 		return $value;
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::widgetToValue()
+	*/
 	public function widgetToValue($value, $id) {
 		return $value;
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\Base::getFieldDefinition()
+	 */
 	public function getFieldDefinition($overrides = array()) {
 		$field = parent::getFieldDefinition($overrides);
 		$field['inputType'] = $overrides['select_as_radio'] ? 'radio' : 'select';
@@ -81,6 +104,9 @@ SQL;
 		return $field;
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::getFilterOptions()
+	 */
 	public function getFilterOptions($ids, $usedOnly, &$count = null) {
 		if($ids !== null && !$ids) {
 			return array();
@@ -146,6 +172,9 @@ SQL;
 		return (array) $options;
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::searchForInLanguages()
+	 */
 	public function searchForInLanguages($pattern, $languages = array()) {
 		$joinTable = $this->getValueTable();
 		$selectTable = $this->get('select_table');
@@ -176,6 +205,9 @@ SQL;
 		return $result->fetchEach('id');
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::sortIds()
+	 */
 	public function sortIds($ids, $direction) {
 		$ids = (array) $ids;
 		if(count($ids) < 2) {
@@ -223,6 +255,9 @@ SQL;
 		return $result->fetchEach('id');
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::setTranslatedDataFor()
+	 */
 	public function setTranslatedDataFor($values, $language) {
 		$values = (array) $values;
 		if(!$values) {
@@ -252,6 +287,9 @@ SQL;
 		\Database::getInstance()->prepare($sql)->executeUncached($params);
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::getTranslatedDataFor()
+	 */
 	public function getTranslatedDataFor($ids, $language) {
 		$ids = (array) $ids;
 		if(!$ids) {
@@ -281,6 +319,9 @@ SQL;
 		return (array) $values;
 	}
 
+	/* (non-PHPdoc)
+	 * @see \MetaModels\Attribute\TranslatedReference::unsetValueFor()
+	 */
 	public function unsetValueFor($ids, $language) {
 		$ids = (array) $ids;
 		if(!$ids) {
@@ -304,6 +345,11 @@ SQL;
 		\Database::getInstance()->prepare($sql)->executeUncached($params);
 	}
 
+	/**
+	 * @param array $values
+	 * @param string $wildcard
+	 * @return string
+	 */
 	public static function generateWildcards(array $values, $wildcard = '?') {
 		return rtrim(str_repeat($wildcard . ',', count($values)), ',');
 	}
